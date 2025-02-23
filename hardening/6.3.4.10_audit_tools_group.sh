@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -e # One error, it's over
+set -u # One variable unset, it's over
+
+. ./common.sh
+
+DESCRIPTION="6.3.4.10 - Ensure audit tools belong to group root"
+
+PACKAGE='auditd'
+AUDIT_TOOLS='/sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/augenrules'
+GROUP='root'
+
+
+audit() {
+    if ! is_pkg_installed "$PACKAGE"; then
+        return
+    fi
+    for file in $AUDIT_TOOLS; do
+        [[ -f "$file" ]] || continue
+        if ! has_file_correct_ownership "$file" "" "$GROUP"; then
+            crit "$DESCRIPTION"
+            return 1
+        fi
+    done
+    pass "$DESCRIPTION"
+}
+
+
+apply() {
+    for file in $AUDIT_TOOLS; do
+        [[ -f "$file" ]] || continue
+        if ! has_file_correct_ownership "$file" "" "$GROUP"; then
+            if chgrp "$GROUP" "$file"; then
+                fixd "Group ownership for $file set to $GROUP"
+            fi
+        fi
+    done
+}
+
+
+if ! audit && $SCRIPT_APPLY; then
+    apply
+fi

@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -e # One error, it's over
+set -u # One variable unset, it's over
+
+. ./common.sh
+
+DESCRIPTION="6.3.1.4 - Ensure audit_backlog_limit is sufficient"
+
+PACKAGE='auditd'
+GRUB_FILE='/etc/default/grub'
+GRUB_OPTIONS='GRUB_CMDLINE_LINUX=audit_backlog_limit=8192'
+
+
+audit() {
+    if ! is_pkg_installed "$PACKAGE"; then
+        return
+    fi
+    for option in $GRUB_OPTIONS; do
+        grub_param=$(echo "$option" | cut -d= -f 1)
+        grub_value=$(echo "$option" | cut -d= -f 2-)
+        pattern="^$grub_param=.*$grub_value"
+        if ! does_pattern_exist_in_file "$GRUB_FILE" "$pattern"; then
+            crit "$DESCRIPTION"
+            return 1
+        fi
+    done
+    pass "$DESCRIPTION"
+}
+
+
+apply() {
+    for option in $GRUB_OPTIONS; do
+        grub_param=$(echo "$option" | cut -d= -f 1)
+        grub_value=$(echo "$option" | cut -d= -f 2-)
+        new_value="$grub_value"
+        if does_pattern_exist_in_file "$GRUB_FILE" "^$grub_param="; then
+            local old_value=$(cat "$GRUB_FILE" | grep -E "^$grub_param=" | perl -lne 'print "$1" if /^\w+=["]?([^"]*)["]?$/')
+            new_value="$(echo $old_value $grub_value)"
+        fi
+        if set_keyword_argument_in_file "$GRUB_FILE" "$grub_param" "\"$new_value\"" "="; then
+            update-grub 2>/dev/null
+            fixd "Parameter $grub_param set to $grub_value in $GRUB_FILE"
+        fi
+    done
+}
+
+
+if ! audit && $SCRIPT_APPLY; then
+    apply
+fi
