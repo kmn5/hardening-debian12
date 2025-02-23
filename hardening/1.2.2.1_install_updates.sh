@@ -21,7 +21,7 @@ audit() {
 
 apply() {
     info "Applying upgrades..."
-    if local upgrade_result=$(DEBIAN_FRONTEND='noninteractive' apt-get -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' upgrade -y 2>/dev/null | grep "upgraded"); then
+    if local upgrade_result=$(DEBIAN_FRONTEND='noninteractive' apt-get -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' upgrade -y 2>/dev/null | grep "upgraded,"); then
         fixd "$upgrade_result"
     fi
 }

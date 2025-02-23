@@ -14,8 +14,7 @@ OTHER_PACKAGES='rsyslog syslog-ng'
 audit() {
     for package in $OTHER_PACKAGES; do
         if is_pkg_installed "$package"; then
-            info "$DESCRIPTION"
-            warn "Different logging service detected ($package)-> Skipping installation"
+            info "$DESCRIPTION -> Different logging service installed ($package)"
             return
         fi
     done

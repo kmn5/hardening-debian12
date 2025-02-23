@@ -18,8 +18,7 @@ audit() {
     fi
     for package in $OTHER_PACKAGES; do
         if is_pkg_installed "$package" && ( is_service_active "$package.service" || is_service_enabled "$package.service" ); then
-            info "$DESCRIPTION"
-            warn "Different firewall detected ($package). Skipping installation"
+            info "$DESCRIPTION -> Different firewall installed ($package)"
             return
         fi
     done
