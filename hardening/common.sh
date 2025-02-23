@@ -555,7 +555,7 @@ add_option_to_fstab() {
     local PARTITION="$1"
     local OPTION="$2"
     backup_file "/etc/fstab"
-    sed -i -e -- "s;\(.*\)\(\s*\)\s\($PARTITION\)\s\(\s*\)\(\w*\)\(\s*\)\(\w*\)*;\1\2 \3 \4\5\6\7,$OPTION;" /etc/fstab
+    sed -i -e "s;\(.*\)\(\s*\)\s\($PARTITION\)\s\(\s*\)\(\w*\)\(\s*\)\(\w*\)*;\1\2 \3 \4\5\6\7,$OPTION;" /etc/fstab
     if ! has_mount_option "$PARTITION" "$OPTION"; then
         return 1
     fi
