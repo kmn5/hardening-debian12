@@ -307,7 +307,9 @@ harden_all() {
     source 99.1.8.3_enable_sysstat.sh                         # 99.1.8.3 - Ensure sysstat is enabled and running
     source 99.1.8.4_disable_sysstat_cron.sh                   # 99.1.8.4 - Ensure additional sysstat cron job is disabled
     source 99.1.9.1_install_systemd-resolved.sh               # 99.1.9.1 - Ensure systemd-resolved is installed
-    source 99.1.9.2_enable_systemd-resolved.sh                # 99.1.9.2 - Ensure systemd-resolved is enabled and running
+    source 99.1.9.2_systemd-resolved_dns.sh                   # 99.1.9.2 - Ensure DNS is configured
+    source 99.1.9.3_systemd-resolved_dnsovertls.sh            # 99.1.9.3 - Ensure DNSOverTLS is configured
+    source 99.1.9.4_enable_systemd-resolved.sh                # 99.1.9.4 - Ensure systemd-resolved is enabled and running
     source 99.2.1_sudoers_perms.sh                            # 99.2.1 - Ensure permissions on /etc/sudoers.d are configured
     source 99.3.1_disable_tty_ldisc_autoload.sh               # 99.3.1 - Ensure autoloading of TTY line disciplines is disabled
     source 99.3.2_enable_protected_fifos.sh                   # 99.3.2 - Ensure writing to FIFOs is restricted

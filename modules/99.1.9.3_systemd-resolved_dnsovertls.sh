@@ -5,7 +5,7 @@ set -u # One variable unset, it's over
 
 . ./common.sh
 
-DESCRIPTION="99.1.9.2 - Ensure DNSOverTLS is configured"
+DESCRIPTION="99.1.9.3 - Ensure DNSOverTLS is configured"
 
 PACKAGE='systemd-resolved'
 CONF_FILE='/etc/systemd/resolved.conf'
