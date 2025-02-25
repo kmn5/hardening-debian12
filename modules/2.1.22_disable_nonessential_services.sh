@@ -9,7 +9,7 @@ DESCRIPTION="2.1.22 - Ensure only approved services are listening on a network i
 
 
 audit() {
-    if ss -plntuH | grep -qv sshd; then
+    if ss -plntuH | grep -qvE "(sshd|dhclient)"; then
         local sockets_multiline="$(ss -plntuH | awk '{print $5,$7}' | column -t | sort)"
         local sockets=()
         while IFS= read -r line; do
