@@ -8,7 +8,7 @@ set -u # One variable unset, it's over
 DESCRIPTION="5.2.6 - Ensure sudo authentication timeout is configured correctly"
 
 PACKAGE='sudo'
-CONF_FILE='/etc/sudoers'
+CONF_FILE='/etc/sudoers/50_hardening'
 CONF_FIND='/etc/sudoers /etc/sudoers.d/*'
 SUDO_PATTERN='^[^#]*timestamp_timeout\s*=\s*([1-9]|1[0-5])(\s|$)'
 SUDO_V_PATTERN='Authentication timestamp timeout: ([1-9]|1[0-5])\.'

@@ -8,7 +8,7 @@ set -u # One variable unset, it's over
 DESCRIPTION="5.2.3 - Ensure sudo log file exists"
 
 PACKAGE='sudo'
-CONF_FILE='/etc/sudoers'
+CONF_FILE='/etc/sudoers/50_hardening'
 CONF_FIND='/etc/sudoers /etc/sudoers.d/*'
 SUDO_PATTERN='^\s*defaults\s+([^#]+,\s*)?logfile\s*=[^#]'
 SUDO_PARAM='logfile="/var/log/sudo.log"'

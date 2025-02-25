@@ -386,17 +386,19 @@ comment_out_sudo_pattern() {
     local FILE="$1"
     local PATTERN="$2"
     backup_file "$FILE"
+    touch -- "$FILE"
+    local temp_file=$(create_temp_file "$FILE")
     awk -v pattern="$PATTERN" -- '{
         if($0~pattern) {
           print "#"$0
         } else {
           print $0
         }
-      }' "$FILE" > "$FILE.tmp"
-    if visudo -qcf -- "$FILE.tmp" 2>/dev/null && mv -- "$FILE.tmp" "$FILE"; then
+      }' "$FILE" > "$temp_file"
+    if visudo -qcf "$temp_file" 2>/dev/null && mv -- "$temp_file" "$FILE"; then
         return
     fi
-    rm -- "$FILE.tmp"
+    rm -- "$temp_file"
     return 1
 }
 
@@ -404,8 +406,9 @@ set_sudo_default_param() {
     local FILE="$1"
     local PARAM="$2"
     backup_file "$FILE"
+    local temp_file=$(create_temp_file)
 
-    if ! cp -p -- "$FILE" "$FILE.tmp"; then
+    if ! cp -p -- "$FILE" "$temp_file" 2>/dev/null; then
         return 1
     fi
 
@@ -414,16 +417,16 @@ set_sudo_default_param() {
         local ARGUMENT=$(cut -d= -f 2- <<< "$PARAM")
         local escaped_keyword=$(sed 's@[]\/$*.^[]@\\&@g' <<< "$KEYWORD")
         local escaped_argument=$(sed 's@[]\/$*.^[]@\\&@g' <<< "$ARGUMENT")
-        sed -i -e -- "s/\(^\s*Defaults\(\s*\|[^#],\s*\)$escaped_keyword\s*=\s*\)\([^,]*\)/\1$escaped_argument/" "$FILE.tmp"
+        sed -i -e "s/\(^\s*Defaults\(\s*\|[^#],\s*\)$escaped_keyword\s*=\s*\)\([^,]*\)/\1$escaped_argument/" "$temp_file"
     fi
-    if cmp -s -- "$FILE" "$FILE.tmp"; then
+    if cmp -s -- "$FILE" "$temp_file"; then
         local escaped_option=$(sed 's@[]\/$*.^[]@\\&@g' <<< "Defaults        $PARAM")
-        sed -i -e "0,/^$/s//$escaped_option\n/" "$FILE.tmp"
+        sed -i -e "0,/^$/s//$escaped_option\n/" "$temp_file"
     fi
-    if visudo -qcf -- "$FILE.tmp" 2>/dev/null && mv -- "$FILE.tmp" "$FILE"; then
+    if visudo -qcf "$temp_file" 2>/dev/null && mv -- "$temp_file" "$FILE"; then
         return
     fi
-    rm -- "$FILE.tmp"
+    rm -- "$temp_file"
     return 1
 }
 
