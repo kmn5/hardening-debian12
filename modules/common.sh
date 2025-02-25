@@ -198,6 +198,15 @@ delete_file() {
     rm -- "$FILE"
 }
 
+create_temp_file() {
+    local file=$(mktemp)
+    if [[ $# -ge 1 && -f "$1" ]]; then
+        local source_perms=$(stat -c '%a' "$1")
+        chmod "$source_perms" "$file" 2>/dev/null
+    fi
+    printf '%s' "$file"
+}
+
 add_end_of_file() {
     local FILE="$1"
     local LINE="$2"
@@ -234,6 +243,8 @@ add_line_after_pattern_in_file() {
     local PATTERN="$2"
     local LINE="$3"
     backup_file "$FILE"
+    touch -- "$FILE"
+    local temp_file=$(create_temp_file "$FILE")
     awk -v pattern="$PATTERN" -v line="$LINE" -- '{
         print $0
         if($0~pattern) {
@@ -242,20 +253,22 @@ add_line_after_pattern_in_file() {
         }
       } END {
         if(foundLine!=1) print line
-      }' "$FILE" > "$FILE.tmp" && mv -- "$FILE.tmp" "$FILE"
+      }' "$FILE" > "$temp_file" && mv -- "$temp_file" "$FILE"
 }
 
 comment_out_pattern_in_file() {
     local FILE="$1"
     local PATTERN="$2"
     backup_file "$FILE"
+    touch -- "$FILE"
+    local temp_file=$(create_temp_file "$FILE")
     awk -v pattern="$PATTERN" -- '{
         if($0~pattern) {
           print "#"$0
         } else {
           print $0
         }
-      }' "$FILE" > "$FILE.tmp" && mv -- "$FILE.tmp" "$FILE"
+      }' "$FILE" > "$temp_file" && mv -- "$temp_file" "$FILE"
 }
 
 comment_replace_pattern_in_file() {
@@ -263,6 +276,8 @@ comment_replace_pattern_in_file() {
     local PATTERN="$2"
     local LINE="$3"
     backup_file "$FILE"
+    touch -- "$FILE"
+    local temp_file=$(create_temp_file "$FILE")
     awk -v pattern="$PATTERN" -v line="$LINE" -- '{
         if($0~pattern) {
           print "#"$0
@@ -273,7 +288,7 @@ comment_replace_pattern_in_file() {
         }
       } END {
         if(foundLine!=1) print line
-      }' "$FILE" > "$FILE.tmp" && mv -- "$FILE.tmp" "$FILE"
+      }' "$FILE" > "$temp_file" && mv -- "$temp_file" "$FILE"
 }
 
 set_keyword_argument_in_file() {
@@ -292,9 +307,8 @@ set_keyword_argument_in_file() {
         return 1 # is directory
     fi
     backup_file "$FILE"
-    if ! does_file_exist "$FILE"; then
-        touch -- "$FILE"
-    fi
+    touch -- "$FILE"
+    local temp_file=$(create_temp_file "$FILE")
     local escaped_keyword=$(sed 's@[]\/$*.^[]@\\&@g' <<< "$KEYWORD")
     awk -F "$FIELD_SEP" -v eskey="$escaped_keyword" -v key="$KEYWORD" -v arg="$ARGUMENT" -v sep="$SEPERATOR" -- '{
         if(tolower($1)~"^ *"tolower(eskey)" *$") {
@@ -311,7 +325,7 @@ set_keyword_argument_in_file() {
         }
       } END {
         if(foundLine!=1) print key""sep""arg
-      }' "$FILE" > "$FILE.tmp" && mv -- "$FILE.tmp" "$FILE"
+      }' "$FILE" > "$temp_file" && mv -- "$temp_file" "$FILE"
 
       # line 8 # } else if($1=="#" && tolower($2)==tolower(eskey) && foundLine!=1) {
 }
