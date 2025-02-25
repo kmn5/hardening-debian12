@@ -3,7 +3,7 @@
 SCRIPT_DIR=$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")
 
 OUTPUT_FILE='hardening.sh.tmp'
-INPUT_DIR="$SCRIPT_DIR/../hardening"
+INPUT_DIR="$SCRIPT_DIR/../modules"
 
 DESC_PATTERN='^\s*DESCRIPTION="([^"]*)"'
 
@@ -63,7 +63,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 harden_all() {
-    cd "$SCRIPT_DIR/hardening"'
+    cd "$SCRIPT_DIR/modules"'
 out "$scripts"
 out '}
 
