@@ -9,7 +9,7 @@ DESCRIPTION="99.3.4 - Ensure sshd AllowAgentForwarding is disabled"
 
 PACKAGE='openssh-server'
 SERVICE_NAME='sshd'
-CONF_FILE='/etc/ssh/sshd_config'
+CONF_FILE='/etc/ssh/sshd_config.d/50-hardening.conf'
 SSHD_OPTION='AllowAgentForwarding=no'
 
 

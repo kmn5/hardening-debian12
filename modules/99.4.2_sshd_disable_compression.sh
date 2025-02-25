@@ -9,7 +9,7 @@ DESCRIPTION="99.4.2 - Ensure sshd Compression is disabled"
 
 PACKAGE='openssh-server'
 SERVICE_NAME='sshd'
-CONF_FILE='/etc/ssh/sshd_config'
+CONF_FILE='/etc/ssh/sshd_config.d/50-hardening.conf'
 SSHD_OPTION='Compression=no'
 
 
