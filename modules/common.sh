@@ -353,7 +353,7 @@ does_sysctl_param_exists() {
 
 set_sysctl_param() {
     local SYSCTL_PARAM="$1"
-    local VALUE="$2"
+    local SYSCTL_VALUE="$2"
     local FILE="$SYSCTL_DEFAULT_FILE"
 
     if [ $# -ge 3 ]; then
@@ -363,13 +363,13 @@ set_sysctl_param() {
     if ! does_sysctl_param_exists "$SYSCTL_PARAM"; then
         return 1 # parameter does not exist
     fi
-    if has_sysctl_param_expected_result "$SYSCTL_PARAM" "$VALUE"; then
+    if has_sysctl_param_expected_result "$SYSCTL_PARAM" "$SYSCTL_VALUE"; then
         return 1 # parameter already set correctly
     fi
     if [ -n "$FILE" ]; then
-        set_keyword_argument_in_file "${SYSCTL_DIRECTORY}${FILE}" "$SYSCTL_PARAM" "$VALUE" " = "
+        set_keyword_argument_in_file "${SYSCTL_DIRECTORY}${FILE}" "$SYSCTL_PARAM" "$SYSCTL_VALUE" " = "
     fi
-    if [ "$(sysctl -w -- "$SYSCTL_PARAM"="$VALUE" 2>/dev/null)" = "$SYSCTL_PARAM = $VALUE" ]; then
+    if [ "$(sysctl -w -- "$SYSCTL_PARAM"="$SYSCTL_VALUE" 2>/dev/null)" = "$SYSCTL_PARAM = $SYSCTL_VALUE" ]; then
         return
     elif has_sysctl_param_expected_result "kernel.modules_disabled" "1"; then
         return # restart required

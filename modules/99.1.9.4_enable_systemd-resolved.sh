@@ -5,7 +5,7 @@ set -u # One variable unset, it's over
 
 . ./common.sh
 
-DESCRIPTION="99.1.9.2 - Ensure systemd-resolved is enabled and running"
+DESCRIPTION="99.1.9.4 - Ensure systemd-resolved is enabled and running"
 
 PACKAGE='systemd-resolved'
 SERVICE_NAME='systemd-resolved.service'
