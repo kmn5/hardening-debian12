@@ -21,8 +21,7 @@ audit() {
     fi
     for route in $UFW_ROUTES; do
         if ! echo "$ufw_status" | grep -Eq "^Default:.*(deny|reject|disabled) \($route\)"; then
-            crit "$DESCRIPTION"
-            echo " " $(echo "$ufw_status" | grep -E "^Default:" | cut -c 10-)
+            crit "$DESCRIPTION" "$(echo "$ufw_status" | grep -E "^Default:" | cut -c 10-)"
             return 1
         fi
     done

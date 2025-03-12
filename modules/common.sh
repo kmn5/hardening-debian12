@@ -603,7 +603,7 @@ apt_check_upgrades() {
 
 apt_install() {
     local PACKAGE="$1"
-    DEBIAN_FRONTEND='noninteractive' apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y install -- $PACKAGE 2>/dev/null 1>&2
+    DEBIAN_FRONTEND='noninteractive' APT_LISTBUGS_FRONTEND='none' apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y install -- $PACKAGE 2>/dev/null 1>&2
 }
 
 apt_purge() {

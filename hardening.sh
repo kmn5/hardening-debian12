@@ -165,7 +165,7 @@ harden_all() {
     source 5.1.1_sshd_conf_perms.sh                           # 5.1.1 - Ensure permissions on /etc/ssh/sshd_config are configured
     source 5.1.2_private_host_keys_perms.sh                   # 5.1.2 - Ensure permissions on SSH private host key files are configured
     source 5.1.3_public_host_keys_perms.sh                    # 5.1.3 - Ensure permissions on SSH public host key files are configured
-    source 5.1.4_configure_ssh_access.sh                       # 5.1.4 - Ensure sshd access is configured
+    source 5.1.4_configure_ssh_access.sh                      # 5.1.4 - Ensure sshd access is configured
     source 5.1.5_sshd_banner.sh                               # 5.1.5 - Ensure sshd Banner is configured
     source 5.1.6_sshd_ciphers.sh                              # 5.1.6 - Ensure sshd Ciphers are configured
     source 5.1.7_sshd_sshd_idle_timeout.sh                    # 5.1.7 - Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured
