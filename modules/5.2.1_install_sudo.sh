@@ -28,7 +28,7 @@ apply() {
         fixd "Installed packages: $PACKAGES"
         local username=$(id -nu "$USER_ID" 2>/dev/null)
         if [[ -n "$username" ]] && usermod -aG "$GROUP" "$username" 2>/dev/null; then
-            info "Added user $username to group $GROUP"
+            info_sub "Added user $username to group $GROUP"
         fi
     fi
 }

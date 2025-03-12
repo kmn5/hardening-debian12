@@ -9,8 +9,9 @@ DESCRIPTION="1.2.1.2 - Ensure package manager repositories are configured"
 
 
 audit() {
-    info "$DESCRIPTION"
-    apt-cache policy | grep -o "https*://\S* \S*" | sort | awk '{print " ",$0}'
+    local results=()
+    readarray -t results <<< "$(apt-cache policy | grep -o "https*://\S* \S*" | sort)"
+    info "$DESCRIPTION" "${results[@]}"
 }
 
 

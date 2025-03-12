@@ -27,7 +27,7 @@ apply() {
         fixd "Installed packages: $PACKAGES"
     fi
     if ! does_file_exist "$DB_FILE"; then
-        info "Initializing aide (this could take a while)"
+        info_sub "Initializing aide (this could take a while)"
         if aideinit -f -y 2>/dev/null 1>&2; then
             fixd "Initialized aide package"
         fi

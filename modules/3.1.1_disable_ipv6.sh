@@ -11,16 +11,18 @@ SYSCTL_PARAMS='net.ipv6.conf.all.disable_ipv6=1 net.ipv6.conf.default.disable_ip
 
 
 audit() {
-    info "$DESCRIPTION"
     if is_ipv6_enabled; then
-        info "IPv6 is enabled on this system."\
-             "Configure IPv6 in accordance with system requirements and local site policy."
+        info "$DESCRIPTION" "IPv6 is enabled on this system."
         return 1
     fi
+    info "$DESCRIPTION"
+    warn "IETF RFC 4038 recommends that applications are built with an assumption of dual stack."
 }
 
 
 apply() {
+    warn "Configure IPv6 in accordance with system requirements and local site policy."
+    return
     for sysctl_values in $SYSCTL_PARAMS; do
         sysctl_param=$(echo "$sysctl_values" | cut -d= -f 1)
         sysctl_exp_result=$(echo "$sysctl_values" | cut -d= -f 2)
@@ -32,5 +34,5 @@ apply() {
 
 
 if ! audit && $SCRIPT_APPLY; then
-    : #apply    # IETF RFC 4038 recommends that applications are built with an assumption of dual stack.
+    apply
 fi

@@ -10,11 +10,14 @@ PACKAGE="gpg"
 
 
 audit() {
-    info "$DESCRIPTION"
     if ! is_pkg_installed "$PACKAGE" && ! apt_install "$PACKAGE"; then
+        info "$DESCRIPTION"
+        warn "Gpg command not found. Skipping check"
         return
     fi
-    gpg --show-keys /etc/apt/trusted.gpg.d/* 2>/dev/null | tr '\n' ' ' | sed 's/pub /\n/g' | perl -lne 'print "  $1 $2" if /(\d\d\d\d-\d\d-\d\d).*uid\W*(.*) sub/'
+    local results=()
+    readarray -t results <<< "$(gpg --show-keys /etc/apt/trusted.gpg.d/* 2>/dev/null | tr '\n' ' ' | sed 's/pub /\n/g' | perl -lne 'print "$1 $2" if /(\d\d\d\d-\d\d-\d\d).*uid\W*(.*) sub/')"
+    info "$DESCRIPTION" "${results[@]}"
 }
 
 

@@ -53,6 +53,10 @@ fixd() {
     print_formatted_log "${BLDGRN}  -> [FIXED]${TXTRST} " "$@"
 }
 
+info_sub() {
+    print_formatted_log "${BLDBLU}  -> [INFO]${TXTRST} " "$@"
+}
+
 #
 # File Backup
 #

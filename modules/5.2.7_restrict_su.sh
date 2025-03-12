@@ -33,10 +33,10 @@ apply() {
         if groupadd -r "$GROUP" 2>/dev/null; then
             local username=$(id -nu "$USER_ID" 2>/dev/null)
             if [[ -n "$username" ]] && usermod -aG "$GROUP" "$username" 2>/dev/null; then
-                info "Added group $GROUP with user $username"
+                info_sub "Added group $GROUP with user $username"
                 warn "It is recommended to leave this group empty to reinforce the use of sudo for privileged access"
             else
-                info "Added group $GROUP"
+                info_sub "Added group $GROUP"
             fi
         fi
     fi
