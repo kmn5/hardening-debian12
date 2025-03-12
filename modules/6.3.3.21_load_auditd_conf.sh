@@ -33,7 +33,7 @@ apply() {
         return 1
     fi
     if [[ "$reboot_required" = 0 ]]; then
-        fixd "Immutable mode detected. Please check if audit rules loaded successfully after reboot with 'auditctl -l'"
+        info_sub "Immutable mode detected. Please check if audit rules loaded successfully after reboot with 'auditctl -l'"
     else
         fixd "Successfully loaded audit rules"
     fi
