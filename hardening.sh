@@ -40,6 +40,9 @@ done
 
 harden_all() {
     cd "$SCRIPT_DIR/modules"
+    source 0.1.1_check_compatibility.sh                       # 0.1.1 - Ensure script is executed on supported environment
+    source 0.1.2_check_pending_reboot.sh                      # 0.1.2 - Ensure no pending reboot due to package or kernel update
+    source 0.2.1_prepare_umask.sh                             # 0.2.1 - Ensure script is running with proper umask
     source 1.1.1.1_disable_cramfs.sh                          # 1.1.1.1 - Ensure cramfs kernel module is not available
     source 1.1.1.2_disable_freevxfs.sh                        # 1.1.1.2 - Ensure freevxfs kernel module is not available
     source 1.1.1.3_disable_hfs.sh                             # 1.1.1.3 - Ensure hfs kernel module is not available
