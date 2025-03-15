@@ -8,7 +8,7 @@ set -u # One variable unset, it's over
 DESCRIPTION="1.6.3 - Ensure remote login warning banner is configured properly"
 
 FILE='/etc/issue.net'
-get_distribution
+DISTRIBUTION="$(get_distribution)"
 PATTERN="(\\\v|\\\r|\\\m|\\\s|$DISTRIBUTION)"
 
 

@@ -8,7 +8,7 @@ set -u # One variable unset, it's over
 DESCRIPTION="1.6.2 - Ensure local login warning banner is configured properly"
 
 FILE='/etc/issue'
-get_distribution
+DISTRIBUTION="$(get_distribution)"
 PATTERN="(\\\v|\\\r|\\\m|\\\s|$DISTRIBUTION)"
 
 

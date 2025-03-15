@@ -652,12 +652,21 @@ is_pkg_up_to_date() {
 #
 
 get_distribution() {
-    DISTRIBUTION=''
     local OSFILE='/etc/os-release'
     if ! [[ -f "$OSFILE" ]]; then
         return 1 # File does not exist
     fi
-    DISTRIBUTION=$(grep "^ID=" /etc/os-release | cut -d= -f2 | tr '[:upper:]' '[:lower:]' | sed -e 's/"//g')
+    local distribution=$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
+    printf '%s' "$distribution"
+}
+
+get_version_id() {
+    local OSFILE='/etc/os-release'
+    if ! [[ -f "$OSFILE" ]]; then
+        return 1 # File does not exist
+    fi
+    local version_id=$(grep '^VERSION_ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
+    printf '%s' "$version_id"
 }
 
 #

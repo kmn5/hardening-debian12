@@ -8,7 +8,7 @@ set -u # One variable unset, it's over
 DESCRIPTION="1.6.1 - Ensure message of the day is configured properly"
 
 FILE='/etc/motd'
-get_distribution
+DISTRIBUTION="$(get_distribution)"
 PATTERN="(\\\v|\\\r|\\\m|\\\s|$DISTRIBUTION)"
 
 
