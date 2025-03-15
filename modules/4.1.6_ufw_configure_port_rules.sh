@@ -18,7 +18,7 @@ audit() {
     if ! echo "$ufw_status" | grep -q "Status: active"; then
         return
     fi
-    local open_ports=$(ss -lntuH | grep -E -v '\s(127.0.0.1|::1|\[::1\]):' | perl -lne 'print "$2/$1" if /^(\w+)[^:]+\S+:(\d+)\s/' | sort -u)
+    local open_ports=$(ss -lntuH 'not ( src 127.0.0.0/8 or src [::1] )' | perl -lne 'print "$2/$1" if /^(\w+)[^:]+\S+:(\d+)\s/' | sort -u)
     for port in $open_ports; do
         if ! echo "$ufw_status" | grep -q "^$port"; then
             crit "$DESCRIPTION" "$(echo $open_ports)"

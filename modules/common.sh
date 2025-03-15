@@ -410,22 +410,18 @@ set_sudo_default_param() {
     local FILE="$1"
     local PARAM="$2"
     backup_file "$FILE"
-    local temp_file=$(create_temp_file)
-
-    if ! cp -p -- "$FILE" "$temp_file" 2>/dev/null; then
-        return 1
-    fi
+    touch -- "$FILE"
+    local temp_file=$(create_temp_file "$FILE")
 
     if [[ "$PARAM" =~ "=" ]]; then
         local KEYWORD=$(cut -d= -f 1 <<< "$PARAM")
         local ARGUMENT=$(cut -d= -f 2- <<< "$PARAM")
-        local escaped_keyword=$(sed 's@[]\/$*.^[]@\\&@g' <<< "$KEYWORD")
-        local escaped_argument=$(sed 's@[]\/$*.^[]@\\&@g' <<< "$ARGUMENT")
+        local escaped_keyword=$(sed 's@[]\/$*.^"[]@\\&@g' <<< "$KEYWORD")
+        local escaped_argument=$(sed 's@[]\/$*.^"[]@\\&@g' <<< "$ARGUMENT")
         sed -i -e "s/\(^\s*Defaults\(\s*\|[^#],\s*\)$escaped_keyword\s*=\s*\)\([^,]*\)/\1$escaped_argument/" "$temp_file"
     fi
-    if cmp -s -- "$FILE" "$temp_file"; then
-        local escaped_option=$(sed 's@[]\/$*.^[]@\\&@g' <<< "Defaults        $PARAM")
-        sed -i -e "0,/^$/s//$escaped_option\n/" "$temp_file"
+    if cmp -s -- "$FILE" "$temp_file"; then # Keyword didn't exist yet, add end of file
+        printf '%s\n' "Defaults        $PARAM" >> "$temp_file"
     fi
     if visudo -qcf "$temp_file" 2>/dev/null && mv -- "$temp_file" "$FILE"; then
         return

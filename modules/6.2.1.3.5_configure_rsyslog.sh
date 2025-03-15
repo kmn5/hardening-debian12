@@ -10,7 +10,7 @@ DESCRIPTION="6.2.1.3.5* - Ensure rsyslog logging is configured"
 PACKAGE='rsyslog'
 CONF_FILE='/etc/rsyslog.d/50-logging.conf'
 CONF_FIND='/etc/rsyslog.d/*.conf /etc/rsyslog.conf'
-OPTIONS='*.*;auth,authpriv.none=-/var/log/syslog auth,authpriv.*=/var/log/auth.log cron.*=-/var/log/cron.log mail.*=-/var/log/mail.log kern.*=-/var/log/kern.log user.*=-/var/log/user.log *.emerg=:omusrmsg:'
+OPTIONS='*.*;auth,authpriv.none=-/var/log/syslog auth,authpriv.*=/var/log/auth.log cron.*=-/var/log/cron.log mail.*=-/var/log/mail.log kern.*=-/var/log/kern.log user.*=-/var/log/user.log *.emerg=:omusrmsg:*'
 
 
 audit() {

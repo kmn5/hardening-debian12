@@ -11,6 +11,7 @@ PACKAGE='sudo'
 CONF_FILE='/etc/sudoers.d/50_hardening'
 CONF_FIND='/etc/sudoers /etc/sudoers.d/*'
 SUDO_PATTERN='^\s*defaults\s+([^#]+,\s*)?logfile\s*=[^#]'
+SUDO_V_PATTERN='Path to log file: '
 SUDO_PARAM='logfile="/var/log/sudo.log"'
 
 
@@ -24,6 +25,10 @@ audit() {
             return
         fi
     done
+    if sudo -V | grep -Eq "$SUDO_V_PATTERN" 2>/dev/null; then
+        pass "$DESCRIPTION"
+        return
+    fi
     crit "$DESCRIPTION"
     return 1
 }
