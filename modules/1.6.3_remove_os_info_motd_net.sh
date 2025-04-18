@@ -8,12 +8,12 @@ set -u # One variable unset, it's over
 DESCRIPTION="1.6.3 - Ensure remote login warning banner is configured properly"
 
 FILE='/etc/issue.net'
-DISTRIBUTION="$(get_distribution)"
-PATTERN="(\\\v|\\\r|\\\m|\\\s|$DISTRIBUTION)"
+PATTERN="(\\\v|\\\r|\\\m|\\\s)"
 
 
 audit() {
-    if does_file_exist "$FILE" && does_pattern_exist_in_file_nocase "$FILE" "$PATTERN"; then
+    if does_pattern_exist_in_file_nocase "$FILE" "$PATTERN" || \
+       does_pattern_exist_in_file_nocase "$FILE" "$(get_distribution)"; then
         crit "$DESCRIPTION"
         return 1
     fi

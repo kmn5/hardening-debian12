@@ -9,13 +9,11 @@ DESCRIPTION="0.1.1 - Ensure script is executed on supported environment"
 
 TARGET_DISTRIBUTION='debian'
 TARGET_VERSION_ID='12'
-DISTRIBUTION="$(get_distribution)"
-VERSION_ID="$(get_version_id)"
 
 
 audit() {
-    if [[ "$DISTRIBUTION" != "$TARGET_DISTRIBUTION" || "$VERSION_ID" != "$TARGET_VERSION_ID" ]]; then
-        crit "$DESCRIPTION" "Running OS: $DISTRIBUTION $VERSION_ID" "Target OS: $TARGET_DISTRIBUTION $TARGET_VERSION_ID"
+    if [[ "$(get_distribution)" != "$TARGET_DISTRIBUTION" || "$(get_version_id)" != "$TARGET_VERSION_ID" ]]; then
+        crit "$DESCRIPTION" "Running OS: $(get_distribution) $(get_version_id)" "Target OS: $TARGET_DISTRIBUTION $TARGET_VERSION_ID"
         return 1
     fi
     pass "$DESCRIPTION"

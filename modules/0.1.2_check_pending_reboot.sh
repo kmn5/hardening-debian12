@@ -5,7 +5,7 @@ set -u # One variable unset, it's over
 
 . ./common.sh
 
-DESCRIPTION="0.1.2 - Ensure no pending reboot due to package or kernel update"
+DESCRIPTION="0.1.2 - Ensure no pending reboot due to package or kernel updates"
 
 RUNNING_KERNEL="$(uname -r)"
 LATEST_KERNEL="$(ls /boot/vmlinuz-* | sort -V | tail -n1 | sed 's|/boot/vmlinuz-||')"

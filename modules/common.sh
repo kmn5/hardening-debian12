@@ -63,8 +63,8 @@ info_sub() {
 
 backup_file() {
     local FILE="$1"
-    if ! [[ -f "$FILE" ]]; then
-        return # Is not a file
+    if ! [[ -r "$FILE" ]]; then
+        return # File is not readable
     else
         local TARGET=$(printf '%s' "$FILE" | sed -s -e 's/\//./g' -e 's/^\.//' -e "s/$/.$(date +%FT%H-%M-%S.%3N)/")
         mkdir -pm 700 -- "$BACKUPDIR"
@@ -188,7 +188,7 @@ _does_pattern_exist_in_file() {
     shift
     local PATTERN="$*"
 
-    if ! [[ -f "$FILE" && -r "$FILE" ]]; then
+    if ! [[ -r "$FILE" ]]; then
         return 1 # File is not readable
     fi
     if ! grep -q "$OPTIONS" -- "$PATTERN" "$FILE"; then
@@ -653,8 +653,8 @@ is_pkg_up_to_date() {
 
 get_distribution() {
     local OSFILE='/etc/os-release'
-    if ! [[ -f "$OSFILE" ]]; then
-        return 1 # File does not exist
+    if ! [[ -r "$OSFILE" ]]; then
+        return 1 # File is not readable
     fi
     local distribution=$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
     printf '%s' "$distribution"
@@ -662,8 +662,8 @@ get_distribution() {
 
 get_version_id() {
     local OSFILE='/etc/os-release'
-    if ! [[ -f "$OSFILE" ]]; then
-        return 1 # File does not exist
+    if ! [[ -r "$OSFILE" ]]; then
+        return 1 # File is not readable
     fi
     local version_id=$(grep '^VERSION_ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
     printf '%s' "$version_id"
