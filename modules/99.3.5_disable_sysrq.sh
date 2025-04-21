@@ -3,6 +3,9 @@
 set -e # One error, it's over
 set -u # One variable unset, it's over
 # Alt + PrintScreen + CommandKey
+
+HARDENING_LEVEL=3
+
 DESCRIPTION="99.3.5 - Ensure magic SysRq key is disabled"
 
 SYSCTL_PARAMS='kernel.sysrq=0'

@@ -3,7 +3,7 @@
 set -e # One error, it's over
 set -u # One variable unset, it's over
 
-HARDENING_LEVEL=
+HARDENING_LEVEL=3
 
 DESCRIPTION="99.3.7 - Ensure BPF JIT compiler hardening is enabled"
 

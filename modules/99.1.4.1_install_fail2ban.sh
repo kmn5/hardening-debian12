@@ -3,7 +3,7 @@
 set -e # One error, it's over
 set -u # One variable unset, it's over
 
-HARDENING_LEVEL=
+HARDENING_LEVEL=3
 
 DESCRIPTION="99.1.4.1 - Ensure fail2ban is installed"
 

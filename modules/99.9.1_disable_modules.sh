@@ -3,7 +3,7 @@
 set -e # One error, it's over
 set -u # One variable unset, it's over
 
-HARDENING_LEVEL=
+HARDENING_LEVEL=5
 
 DESCRIPTION="99.9.1 - Ensure loading and unloading of kernel modules at runtime is disabled"
 
