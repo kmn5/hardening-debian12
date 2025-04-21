@@ -1,16 +1,19 @@
 #!/bin/bash
 
-# Initialize variables
-SCRIPT_ROOT_DIR="$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")"
-SCRIPT_MODULES_DIR="$SCRIPT_ROOT_DIR/modules"
-export SCRIPT_LIB_DIR="$SCRIPT_ROOT_DIR/lib"
+set -e # One error, it's over
+set -u # One variable unset, it's over
 
+
+# Initialize variables
 SCRIPT_APPLY=false
 SCRIPT_FORCE=false
 SCRIPT_DOCKER=false
-SCRIPT_HARDENING_LEVEL=0
+SCRIPT_HARDENING_LEVEL=9
 
-SCRIPT_MODULE_ARGS=''
+
+# Import libraries
+[[ -r "$SCRIPT_LIB_DIR/common.sh" ]] && . "$SCRIPT_LIB_DIR/common.sh"
+[[ -r "$SCRIPT_LIB_DIR/utils.sh" ]] && . "$SCRIPT_LIB_DIR/utils.sh"
 
 
 # Display help message
@@ -74,20 +77,13 @@ if [[ ! "$SCRIPT_HARDENING_LEVEL" =~ ^[0-9]+$ ]]; then
 fi
 
 
-# Prepare script module arguments
-if $SCRIPT_APPLY; then
-    SCRIPT_MODULE_ARGS+=" --apply"
+# Check for required hardening level
+if [[ -v HARDENING_LEVEL ]] && (( $SCRIPT_HARDENING_LEVEL < $HARDENING_LEVEL )) 2>/dev/null; then
+    exit 0
 fi
-if $SCRIPT_FORCE; then
-    SCRIPT_MODULE_ARGS+=" --force"
-fi
-if $SCRIPT_DOCKER; then
-    SCRIPT_MODULE_ARGS+=" --docker"
-fi
-SCRIPT_MODULE_ARGS+=" --level=$SCRIPT_HARDENING_LEVEL"
 
 
-# Parse every script and execute them
-for SCRIPT_MODULE in $(find "${SCRIPT_MODULES_DIR}"/ -name "*.sh" | sort -V); do
-    . "${SCRIPT_MODULE}${SCRIPT_MODULE_ARGS}"
-done
+# Execute audit and apply functions
+if ! audit && $SCRIPT_APPLY; then
+    apply
+fi

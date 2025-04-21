@@ -3,7 +3,7 @@
 set -e # One error, it's over
 set -u # One variable unset, it's over
 
-. ./common.sh
+HARDENING_LEVEL=2
 
 DESCRIPTION="3.3.1 - Ensure ip forwarding is disabled"
 
@@ -28,8 +28,10 @@ audit() {
 
 
 apply() {
-    warn "IP forwarding is used by Docker, so this step will be skipped"
-    return
+    if $SCRIPT_DOCKER; then
+        warn "IP forwarding is used by Docker, so this step will be skipped"
+        return
+    fi
     for sysctl_values in $SYSCTL_PARAMS; do
         sysctl_param=$(echo "$sysctl_values" | cut -d= -f 1)
         sysctl_exp_result=$(echo "$sysctl_values" | cut -d= -f 2)
@@ -43,6 +45,12 @@ apply() {
 }
 
 
-if ! audit && $SCRIPT_APPLY; then
-    apply
+# Source root dir parameter
+if [[ ! -v SCRIPT_LIB_DIR ]]; then
+    SCRIPT_LIB_DIR="$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")/../lib"
+fi
+
+# Main function, will call proper functions (audit, apply)
+if [[ -r "$SCRIPT_LIB_DIR/main.sh" ]]; then
+    . "$SCRIPT_LIB_DIR/main.sh"
 fi
