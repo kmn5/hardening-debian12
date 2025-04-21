@@ -18,7 +18,7 @@ SCRIPT_HARDENING_LEVEL=9
 
 # Display help message
 show_help() {
-    printf '%b\n' "Usage: $0 [OPTIONS]"\
+    info "Usage: $0 [OPTIONS]"\
         ""\
         "Options:"\
         "  -a,       --apply          Apply hardening changes to this system."\
@@ -26,13 +26,13 @@ show_help() {
         "  -d,       --docker         Skip changes that would break docker service."\
         "  -l <int>, --level=<int>    Set hardening level (1: basic... 5: high security)"\
         "  -h,       --help           Show this help message and exit."
-    exit 0
+    exit 1
 }
 
 
 # Display unkown option
 show_unknown_option() {
-    printf '%b\n' "Unknown option: $1"\
+    crit "Unknown option: $1"\
         "Use --help or -h to see available options."
     exit 1
 }
@@ -40,7 +40,7 @@ show_unknown_option() {
 
 # Display requires argument
 show_requires_argument() {
-    printf '%b\n' "Option -$OPTARG requires an argument."\
+    crit "Option -$OPTARG requires an argument."\
         "Use --help or -h to see available options."
     exit 1
 }
@@ -72,7 +72,7 @@ shift "$((OPTIND-1))"  # Remove processed options
 
 # Validate input arguments
 if [[ ! "$SCRIPT_HARDENING_LEVEL" =~ ^[0-9]+$ ]]; then
-    printf '%b\n' "Input for hardening level is not a positive integer."
+    crit "Input for hardening level is not a positive integer."
     exit 1
 fi
 

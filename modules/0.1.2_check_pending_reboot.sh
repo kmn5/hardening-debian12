@@ -27,6 +27,7 @@ audit() {
 
 apply() {
     warn "Manually reboot system before proceeding"
+    exit 1
 }
 
 

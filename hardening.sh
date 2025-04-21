@@ -1,93 +1,15 @@
 #!/bin/bash
 
+set -e # One error, it's over
+set -u # One variable unset, it's over
+
 # Initialize variables
 SCRIPT_ROOT_DIR="$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")"
 SCRIPT_MODULES_DIR="$SCRIPT_ROOT_DIR/modules"
 export SCRIPT_LIB_DIR="$SCRIPT_ROOT_DIR/lib"
 
-SCRIPT_APPLY=false
-SCRIPT_FORCE=false
-SCRIPT_DOCKER=false
-SCRIPT_HARDENING_LEVEL=0
-
-SCRIPT_MODULE_ARGS=''
-
-
-# Display help message
-show_help() {
-    printf '%b\n' "Usage: $0 [OPTIONS]"\
-        ""\
-        "Options:"\
-        "  -a,       --apply          Apply hardening changes to this system."\
-        "  -f,       --force          Force changes (ignores SSH warnings)."\
-        "  -d,       --docker         Skip changes that would break docker service."\
-        "  -l <int>, --level=<int>    Set hardening level (1: basic... 5: high security)"\
-        "  -h,       --help           Show this help message and exit."
-    exit 0
-}
-
-
-# Display unkown option
-show_unknown_option() {
-    printf '%b\n' "Unknown option: $1"\
-        "Use --help or -h to see available options."
-    exit 1
-}
-
-
-# Display requires argument
-show_requires_argument() {
-    printf '%b\n' "Option -$OPTARG requires an argument."\
-        "Use --help or -h to see available options."
-    exit 1
-}
-
-
-# Parse command-line arguments
-while getopts ":afdhl:-:" opt 2>/dev/null; do
-    case "$opt" in
-        a) SCRIPT_APPLY=true ;;
-        f) SCRIPT_FORCE=true ;;
-        d) SCRIPT_DOCKER=true ;;
-        l) SCRIPT_HARDENING_LEVEL="$OPTARG" ;;
-        h) show_help ;;
-        -) case "$OPTARG" in  # Long option handler
-               apply) SCRIPT_APPLY=true ;;
-               force) SCRIPT_FORCE=true ;;
-               docker) SCRIPT_DOCKER=true ;;
-               level=*) SCRIPT_HARDENING_LEVEL="${OPTARG#*=}" ;;
-               help) show_help ;;
-               *) show_unknown_option "--$OPTARG" ;;
-           esac
-           ;;
-        :) show_requires_argument "-$OPTARG" ;;
-        *) show_unknown_option "$1" ;;
-    esac
-done
-shift "$((OPTIND-1))"  # Remove processed options
-
-
-# Validate input arguments
-if [[ ! "$SCRIPT_HARDENING_LEVEL" =~ ^[0-9]+$ ]]; then
-    printf '%b\n' "Input for hardening level is not a positive integer."
-    exit 1
-fi
-
-
-# Prepare script module arguments
-if $SCRIPT_APPLY; then
-    SCRIPT_MODULE_ARGS+=" --apply"
-fi
-if $SCRIPT_FORCE; then
-    SCRIPT_MODULE_ARGS+=" --force"
-fi
-if $SCRIPT_DOCKER; then
-    SCRIPT_MODULE_ARGS+=" --docker"
-fi
-SCRIPT_MODULE_ARGS+=" --level=$SCRIPT_HARDENING_LEVEL"
-
 
 # Parse every script and execute them
 for SCRIPT_MODULE in $(find "${SCRIPT_MODULES_DIR}"/ -name "*.sh" | sort -V); do
-    . "${SCRIPT_MODULE}${SCRIPT_MODULE_ARGS}"
+    /bin/bash "$SCRIPT_MODULE" "$@"
 done
